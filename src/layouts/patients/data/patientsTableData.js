@@ -25,7 +25,7 @@ import MDBadge from "components/MDBadge";
 import profile from "assets/images/profile.jpg";
 
 export default function data() {
-  const Author = ({ image, name, email }) => (
+  const Patient = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
       <MDBox ml={2} lineHeight={1}>
@@ -37,7 +37,7 @@ export default function data() {
     </MDBox>
   );
 
-  const Job = ({ title, description }) => (
+  const Dermatologist = ({ title, description }) => (
     <MDBox lineHeight={1} textAlign="left">
       <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
         {title}
@@ -57,8 +57,8 @@ export default function data() {
 
     rows: [
       {
-        patient: <Author image={profile} name="John Michael" email="john@creative-tim.com" />,
-        dermatologist: <Job title="Manager" description="Organization" />,
+        patient: <Patient image={profile} name="John Michael" email="john@creative-tim.com" />,
+        dermatologist: <Dermatologist title="Manager" description="Organization" />,
         status: (
           <MDBox ml={-1}>
             <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
@@ -76,8 +76,8 @@ export default function data() {
         ),
       },
       {
-        patient: <Author image={profile} name="Alexa Liras" email="alexa@creative-tim.com" />,
-        dermatologist: <Job title="Programator" description="Developer" />,
+        patient: <Patient image={profile} name="Alexa Liras" email="alexa@creative-tim.com" />,
+        dermatologist: <Dermatologist title="Programator" description="Developer" />,
         status: (
           <MDBox ml={-1}>
             <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
@@ -95,8 +95,10 @@ export default function data() {
         ),
       },
       {
-        patient: <Author image={profile} name="Laurent Perrier" email="laurent@creative-tim.com" />,
-        dermatologist: <Job title="Executive" description="Projects" />,
+        patient: (
+          <Patient image={profile} name="Laurent Perrier" email="laurent@creative-tim.com" />
+        ),
+        dermatologist: <Dermatologist title="Executive" description="Projects" />,
         status: (
           <MDBox ml={-1}>
             <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />

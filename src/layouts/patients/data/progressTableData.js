@@ -28,7 +28,7 @@ import MDProgress from "components/MDProgress";
 import persona from "assets/images/profile.jpg";
 
 export default function data() {
-  const Project = ({ image, name }) => (
+  const Patient = ({ image, name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" variant="rounded" />
       <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
@@ -59,7 +59,7 @@ export default function data() {
 
     rows: [
       {
-        patient: <Project image={persona} name="Asana" />,
+        patient: <Patient image={persona} name="Asana" />,
         biopsy: (
           <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
             $2,500
@@ -78,7 +78,7 @@ export default function data() {
         ),
       },
       {
-        patient: <Project image={persona} name="Github" />,
+        patient: <Patient image={persona} name="Github" />,
         biopsy: (
           <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
             $5,000
@@ -97,7 +97,7 @@ export default function data() {
         ),
       },
       {
-        patient: <Project image={persona} name="Atlassian" />,
+        patient: <Patient image={persona} name="Atlassian" />,
         biopsy: (
           <MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">
             $3,400

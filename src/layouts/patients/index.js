@@ -13,12 +13,12 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "layouts/patients/data/authorsTableData";
-import projectsTableData from "layouts/patients/data/projectsTableData";
+import patientsTableData from "layouts/patients/data/patientsTableData";
+import progressTableData from "layouts/patients/data/progressTableData";
 
 function Tables() {
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns, rows } = patientsTableData();
+  const { columns: pColumns, rows: pRows } = progressTableData();
 
   return (
     <DashboardLayout>
