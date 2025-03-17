@@ -22,6 +22,7 @@
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
+import Patients from "layouts/patients";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
 import RTL from "layouts/rtl";
@@ -41,6 +42,14 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,
+  },
+  {
+    type: "collapse",
+    name: "Patients",
+    key: "patients",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/patients",
+    component: <Patients />,
   },
   {
     type: "collapse",
