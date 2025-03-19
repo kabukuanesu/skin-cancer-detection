@@ -22,7 +22,9 @@
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
+import AddUser from "layouts/add-user";
 import AddPatient from "layouts/add-patient";
+import Users from "layouts/users";
 import Patients from "layouts/patients";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
@@ -31,6 +33,16 @@ import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+
+// Workflow pages
+import Lesion from "layouts/flow/lesion";
+import Biopsy from "layouts/flow/biopsy";
+import Diagnosis from "layouts/flow/diagnosis";
+import Image from "layouts/flow/image";
+import ModelPrediction from "layouts/flow/model-prediction";
+import FinalDiagnosis from "layouts/flow/final-diagnosis";
+import Treatment from "layouts/flow/treatment";
+import FollowUp from "layouts/flow/follow-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -46,7 +58,23 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Registration",
+    name: "User Registration",
+    key: "add-user",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/add-user",
+    component: <AddUser />,
+  },
+  {
+    type: "collapse",
+    name: "Users",
+    key: "users",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/users",
+    component: <Users />,
+  },
+  {
+    type: "collapse",
+    name: "Patient Registration",
     key: "add-patient",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/add-patient",
@@ -59,6 +87,70 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/patients",
     component: <Patients />,
+  },
+  {
+    type: "collapse",
+    name: "Add Lesion",
+    key: "lesion",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/lesion",
+    component: <Lesion />,
+  },
+  {
+    type: "collapse",
+    name: "Add Biopsy",
+    key: "biopsy",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/biopsy",
+    component: <Biopsy />,
+  },
+  {
+    type: "collapse",
+    name: "Add Diagnosis",
+    key: "diagnosis",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/diagnosis",
+    component: <Diagnosis />,
+  },
+  {
+    type: "collapse",
+    name: "Add Image",
+    key: "image",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/image",
+    component: <Image />,
+  },
+  {
+    type: "collapse",
+    name: "Add Prediction",
+    key: "add-prediction",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/add-prediction",
+    component: <ModelPrediction />,
+  },
+  {
+    type: "collapse",
+    name: "Final Diagnosis",
+    key: "final-diagnosis",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/final-diagnosis",
+    component: <FinalDiagnosis />,
+  },
+  {
+    type: "collapse",
+    name: "Treatment",
+    key: "treatment",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/treatment",
+    component: <Treatment />,
+  },
+  {
+    type: "collapse",
+    name: "Follow Up",
+    key: "follow-up",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/follow-up",
+    component: <FollowUp />,
   },
   {
     type: "collapse",

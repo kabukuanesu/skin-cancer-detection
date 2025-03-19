@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -58,6 +59,9 @@ export default function TextFields() {
       });
   };
 
+  const navigate = useNavigate();
+  const handleNext = () => navigate("/dashboard");
+
   return (
     <Box
       component="form"
@@ -80,6 +84,11 @@ export default function TextFields() {
           Record
         </MDButton>
         {renderInfoSB}
+      </Grid>
+      <Grid item xs={12} sm={6} lg={3}>
+        <MDButton variant="gradient" color="info" onClick={handleNext} fullWidth>
+          Next
+        </MDButton>
       </Grid>
     </Box>
   );

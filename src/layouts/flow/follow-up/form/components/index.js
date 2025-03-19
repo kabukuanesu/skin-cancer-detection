@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -10,6 +11,8 @@ export default function TextFields() {
   const [formData, setFormData] = React.useState({
     followUpResult: "",
     followUpDescription: "",
+    isFollowUp: "",
+    followingUpDate: "",
   });
 
   const [infoSB, setInfoSB] = useState(false);
@@ -51,12 +54,17 @@ export default function TextFields() {
         setFormData({
           followUpResult: "",
           followUpDescription: "",
+          isFollowUp: "",
+          followingUpDate: "",
         });
       })
       .catch((error) => {
         console.error("Error posting data:", error);
       });
   };
+
+  const navigate = useNavigate();
+  const handleNext = () => navigate("/treatment");
 
   return (
     <Box
@@ -76,10 +84,15 @@ export default function TextFields() {
       ))}
 
       <Grid item xs={12} sm={6} lg={3}>
-        <MDButton variant="gradient" color="info" onClick={handleAddTreatment} fullWidth>
+        <MDButton variant="gradient" color="info" onClick={handleAddFollowUp} fullWidth>
           Prescribe
         </MDButton>
         {renderInfoSB}
+      </Grid>
+      <Grid item xs={12} sm={6} lg={3}>
+        <MDButton variant="gradient" color="info" onClick={handleNext} fullWidth>
+          Next
+        </MDButton>
       </Grid>
     </Box>
   );
