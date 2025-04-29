@@ -64,7 +64,8 @@ export default function TextFields() {
   };
 
   const navigate = useNavigate();
-  const handleNext = () => navigate("/dashboard");
+  const handleNext = () => navigate("/follow-up");
+  const handleExit = () => navigate("/patients");
 
   return (
     <Box
@@ -92,6 +93,11 @@ export default function TextFields() {
       <Grid item xs={12} sm={6} lg={3}>
         <MDButton variant="gradient" color="info" onClick={handleNext} fullWidth>
           Next
+        </MDButton>
+      </Grid>
+      <Grid item xs={12} sm={6} lg={3}>
+        <MDButton variant="gradient" color="info" onClick={handleExit} fullWidth>
+          Exit
         </MDButton>
       </Grid>
     </Box>

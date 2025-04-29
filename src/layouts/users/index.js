@@ -38,7 +38,7 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  All Users
+                  All Staff Members
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
@@ -65,7 +65,7 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Users Progress
+                  Staff Progress
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>

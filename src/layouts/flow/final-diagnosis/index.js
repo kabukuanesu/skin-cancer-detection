@@ -27,7 +27,7 @@ export default function AddFollowUp() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Follow Up
+                  Final Diagnosis
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>

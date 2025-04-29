@@ -27,7 +27,7 @@ export default function AddPatient() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  User Registration
+                  Staff Registration
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
