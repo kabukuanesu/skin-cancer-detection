@@ -36,6 +36,7 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
 function Cover() {
+  const [username, setUsername] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [recoveryQuestion, setRecoveryQuestion] = useState("");
@@ -77,14 +78,15 @@ function Cover() {
 
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch("http://localhost:5212/api/Authentication/update", {
-        method: "POST",
+      const response = await fetch("http://localhost:5212/api/UpdateAuth", {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
           accept: "*/*",
         },
         body: JSON.stringify({
+          username,
           currentPassword,
           newPassword,
           recoveryQuestion,
@@ -142,6 +144,17 @@ function Cover() {
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" onSubmit={handleUpdate}>
+            <MDBox mb={2}>
+              <MDInput
+                type="text"
+                label="Username"
+                variant="standard"
+                fullWidth
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </MDBox>
             <MDBox mb={2}>
               <MDInput
                 type="password"
@@ -215,9 +228,8 @@ function Cover() {
                 fullWidth
                 disabled={!agreeTerms}
                 sx={{
-                  position: "relative", // Required for z-index to work
-                  zIndex: 1, // Brings button to foreground
-                  // ... other styles ...
+                  position: "relative",
+                  zIndex: 1,
                 }}
               >
                 update
