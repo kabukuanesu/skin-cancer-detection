@@ -14,23 +14,29 @@ export default function TextFields() {
     dateOfBirth: "",
     gender: "",
     physicalAddress: "",
-    emailAddress: "",
+    email: "",
     phoneNumber: "",
-    position: "",
+    role: "",
   });
 
   const [infoSB, setInfoSB] = useState(false);
+  const [notification, setNotification] = useState({
+    title: "",
+    content: "",
+    isError: false,
+  });
   const closeInfoSB = () => setInfoSB(false);
 
   const renderInfoSB = (
     <MDSnackbar
-      icon="notifications"
-      title="User Management"
-      content="User registered successfully"
+      icon={notification.isError ? "warning" : "check"}
+      title={notification.title}
+      content={notification.content}
       dateTime="Just Now"
       open={infoSB}
       onClose={closeInfoSB}
       close={closeInfoSB}
+      color={notification.isError ? "error" : "success"}
     />
   );
 
@@ -43,17 +49,37 @@ export default function TextFields() {
   };
 
   const handleAddUser = () => {
-    fetch("http://localhost:5013/api/Users", {
+    const token = localStorage.getItem("authToken");
+    const userData = {
+      ...formData,
+      password: "Cancer@123",
+      recoveryQuestion: "Who are we?",
+      recoveryAnswer: "Skin Cancer",
+    };
+
+    fetch("http://localhost:5212/api/User", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        accept: "text/plain",
+        Authorization: `Bearer ${token}`,
+        accept: "*/*",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(userData),
     })
-      .then((response) => {
-        // Handle the response from the API if needed
-        console.log("Data posted successfully!");
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Registration failed");
+        }
+        console.log(response);
+        return response.json();
+      })
+      .then((data) => {
+        setNotification({
+          title: "User Management",
+          content: data.message || "User registered successfully",
+          isError: false,
+        });
         setInfoSB(true);
         setFormData({
           firstName: "",
@@ -61,18 +87,36 @@ export default function TextFields() {
           dateOfBirth: "",
           gender: "",
           physicalAddress: "",
-          emailAddress: "",
+          email: "",
           phoneNumber: "",
-          position: "",
+          role: "",
         });
       })
       .catch((error) => {
+        setNotification({
+          title: "Registration Error",
+          content: error.message || "An error occurred during registration",
+          isError: true,
+        });
+        setInfoSB(true);
         console.error("Error posting data:", error);
       });
   };
 
   const navigate = useNavigate();
   const handleNext = () => navigate("/users");
+
+  // Fields that should be displayed in the form
+  const displayFields = [
+    "firstName",
+    "lastName",
+    "dateOfBirth",
+    "gender",
+    "physicalAddress",
+    "email",
+    "phoneNumber",
+    "role",
+  ];
 
   return (
     <Box
@@ -81,13 +125,14 @@ export default function TextFields() {
       noValidate
       autoComplete="off"
     >
-      {Object.keys(formData).map((key) => (
+      {displayFields.map((key) => (
         <TextField
           key={key}
           id={key}
           label={key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
           value={formData[key]}
           onChange={handleInputChange}
+          required
         />
       ))}
 

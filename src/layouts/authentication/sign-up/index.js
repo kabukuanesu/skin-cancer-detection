@@ -8,10 +8,12 @@
 
 Coded by www.creative-tim.com
 
- =========================================================
+=========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+
+import { useState } from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -25,6 +27,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import MDSnackbar from "components/MDSnackbar";
 
 // Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
@@ -33,6 +36,89 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
 function Cover() {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [recoveryQuestion, setRecoveryQuestion] = useState("");
+  const [recoveryAnswer, setRecoveryAnswer] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [notification, setNotification] = useState({
+    message: "",
+    isError: false,
+  });
+
+  const [infoSB, setInfoSB] = useState(false);
+  const closeInfoSB = () => setInfoSB(false);
+
+  const renderInfoSB = (
+    <MDSnackbar
+      icon={notification.isError ? "warning" : "check"}
+      title={notification.isError ? "Update Failed" : "Update Successful"}
+      content={notification.message}
+      dateTime="Just Now"
+      open={infoSB}
+      onClose={closeInfoSB}
+      close={closeInfoSB}
+      color={notification.isError ? "error" : "success"}
+    />
+  );
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setNotification({ message: "", isError: false });
+
+    if (!agreeTerms) {
+      setNotification({
+        message: "You must agree to the terms and conditions",
+        isError: true,
+      });
+      setInfoSB(true);
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch("http://localhost:5212/api/Authentication/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          accept: "*/*",
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+          recoveryQuestion,
+          recoveryAnswer,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Update failed");
+      }
+
+      setNotification({
+        message: data.message || "Authentication details updated successfully!",
+        isError: false,
+      });
+      setInfoSB(true);
+
+      // Clear form fields
+      setCurrentPassword("");
+      setNewPassword("");
+      setRecoveryQuestion("");
+      setRecoveryAnswer("");
+    } catch (err) {
+      setNotification({
+        message: err.message || "An error occurred during update",
+        isError: true,
+      });
+      setInfoSB(true);
+      console.error("Update error:", err);
+    }
+  };
+
   return (
     <CoverLayout image={bgImage}>
       <Card>
@@ -48,25 +134,60 @@ function Cover() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Join us today
+            Update Authentication
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Enter your email and password to register
+            Enter your new password and recovery question to continue!
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form">
+          <MDBox component="form" role="form" onSubmit={handleUpdate}>
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+              <MDInput
+                type="password"
+                label="Current Password"
+                variant="standard"
+                fullWidth
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput
+                type="password"
+                label="New Password"
+                variant="standard"
+                fullWidth
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
+              <MDInput
+                type="text"
+                label="Recovery Question"
+                variant="standard"
+                fullWidth
+                value={recoveryQuestion}
+                onChange={(e) => setRecoveryQuestion(e.target.value)}
+                required
+              />
+            </MDBox>
+            <MDBox mb={2}>
+              <MDInput
+                type="text"
+                label="Recovery Answer"
+                variant="standard"
+                fullWidth
+                value={recoveryAnswer}
+                onChange={(e) => setRecoveryAnswer(e.target.value)}
+                required
+              />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
-              <Checkbox />
+              <Checkbox checked={agreeTerms} onChange={() => setAgreeTerms(!agreeTerms)} />
               <MDTypography
                 variant="button"
                 fontWeight="regular"
@@ -87,13 +208,25 @@ function Cover() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
-                sign in
+              <MDButton
+                type="submit"
+                variant="gradient"
+                color="info"
+                fullWidth
+                disabled={!agreeTerms}
+                sx={{
+                  position: "relative", // Required for z-index to work
+                  zIndex: 1, // Brings button to foreground
+                  // ... other styles ...
+                }}
+              >
+                update
               </MDButton>
+              {renderInfoSB}
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
-                Already have an account?{" "}
+                Already updated?{" "}
                 <MDTypography
                   component={Link}
                   to="/authentication/sign-in"

@@ -47,8 +47,10 @@ function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [notification, setNotification] = useState({
+    message: "",
+    isError: false,
+  });
   const navigate = useNavigate();
 
   const [infoSB, setInfoSB] = useState(false);
@@ -56,14 +58,14 @@ function Basic() {
 
   const renderInfoSB = (
     <MDSnackbar
-      icon={error ? "warning" : "check"}
-      title={error ? "Error" : "Success"}
-      content={error || "Login Successful"}
+      icon={notification.isError ? "warning" : "check"}
+      title={notification.isError ? "Error" : "Success"}
+      content={notification.message}
       dateTime="Just Now"
       open={infoSB}
       onClose={closeInfoSB}
       close={closeInfoSB}
-      color={error ? "error" : "success"}
+      color={notification.isError ? "error" : "success"}
     />
   );
 
@@ -71,8 +73,7 @@ function Basic() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess(false);
+    setNotification({ message: "", isError: false });
 
     try {
       const response = await fetch("http://localhost:5212/api/Authentication/login", {
@@ -87,19 +88,21 @@ function Basic() {
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
-      }
-
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
 
       // Store token and user data
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("userData", JSON.stringify(data.user));
 
-      // Show success message
-      setSuccess(true);
+      // Show success message from API response or default
+      setNotification({
+        message: data.message || "Login successful",
+        isError: false,
+      });
       setInfoSB(true);
 
       // Redirect based on role after a short delay
@@ -111,7 +114,10 @@ function Basic() {
         }
       }, 1500);
     } catch (err) {
-      setError(err.message || "An error occurred during login");
+      setNotification({
+        message: err.message || "An error occurred during login",
+        isError: true,
+      });
       setInfoSB(true);
       console.error("Login error:", err);
     }
