@@ -8,15 +8,13 @@
 
 Coded by www.creative-tim.com
 
- =========================================================
+=========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
 import { useEffect } from "react";
-
-// react-router-dom components
-import { useLocation, NavLink } from "react-router-dom";
+import { useLocation, NavLink, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -51,6 +49,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
+  const navigate = useNavigate();
   const collapseName = location.pathname.replace("/", "");
 
   let textColor = "white";
@@ -62,6 +61,18 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   }
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
+
+  const handleLogout = () => {
+    // Clear the stored token and user data
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userData");
+
+    // Redirect to sign-in page
+    navigate("/authentication/sign-in");
+
+    // Optional: You might want to refresh the page to reset the application state
+    window.location.reload();
+  };
 
   useEffect(() => {
     // A function that sets the mini state of the sidenav.
@@ -181,15 +192,14 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       <List>{renderRoutes}</List>
       <MDBox p={2} mt="auto">
         <MDButton
-          component="a"
-          href="https://www.creative-tim.com/product/material-dashboard-pro-react"
-          target="_blank"
-          rel="noreferrer"
+          component="button" // Changed from "a" to "button"
+          onClick={handleLogout} // Added onClick handler
           variant="gradient"
           color={sidenavColor}
           fullWidth
+          sx={{ cursor: "pointer" }}
         >
-          upgrade to pro
+          logout
         </MDButton>
       </MDBox>
     </SidenavRoot>
