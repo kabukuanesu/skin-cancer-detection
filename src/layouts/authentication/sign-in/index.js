@@ -35,6 +35,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import MDSnackbar from "components/MDSnackbar";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
@@ -47,13 +48,31 @@ function Basic() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+
+  const [infoSB, setInfoSB] = useState(false);
+  const closeInfoSB = () => setInfoSB(false);
+
+  const renderInfoSB = (
+    <MDSnackbar
+      icon={error ? "warning" : "check"}
+      title={error ? "Error" : "Success"}
+      content={error || "Login Successful"}
+      dateTime="Just Now"
+      open={infoSB}
+      onClose={closeInfoSB}
+      close={closeInfoSB}
+      color={error ? "error" : "success"}
+    />
+  );
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess(false);
 
     try {
       const response = await fetch("http://localhost:5212/api/Authentication/login", {
@@ -79,14 +98,21 @@ function Basic() {
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("userData", JSON.stringify(data.user));
 
-      // Redirect based on role
-      if (data.user.role === "Dermatologist") {
-        navigate("/dashboard");
-      } else {
-        navigate("/dashboard");
-      }
+      // Show success message
+      setSuccess(true);
+      setInfoSB(true);
+
+      // Redirect based on role after a short delay
+      setTimeout(() => {
+        if (data.user.role === "Dermatologist") {
+          navigate("/dashboard");
+        } else {
+          navigate("/dashboard");
+        }
+      }, 1500);
     } catch (err) {
       setError(err.message || "An error occurred during login");
+      setInfoSB(true);
       console.error("Login error:", err);
     }
   };
@@ -160,17 +186,11 @@ function Basic() {
                 &nbsp;&nbsp;Remember me
               </MDTypography>
             </MDBox>
-            {error && (
-              <MDBox mt={1} mb={1}>
-                <MDTypography variant="caption" color="error">
-                  {error}
-                </MDTypography>
-              </MDBox>
-            )}
             <MDBox mt={4} mb={1}>
               <MDButton type="submit" variant="gradient" color="info" fullWidth>
                 sign in
               </MDButton>
+              {renderInfoSB}
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
