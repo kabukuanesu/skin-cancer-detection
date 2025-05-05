@@ -19,6 +19,7 @@ import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
+import { useSnackbar } from "notistack";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -34,6 +35,7 @@ export default function data() {
   const [loading, setLoading] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleMenuOpen = (event, user) => {
     setAnchorEl(event.currentTarget);
@@ -45,27 +47,69 @@ export default function data() {
     setSelectedUser(null);
   };
 
-  const handleResetPassword = () => {
-    console.log("Reset password for:", selectedUser);
-    // Add your reset password logic here
-    handleMenuClose();
+  const handleResetPassword = async () => {
+    if (!selectedUser) return;
+
+    const token = localStorage.getItem("authToken");
+    const resetData = {
+      firstName: selectedUser.firstName,
+      lastName: selectedUser.lastName,
+      dateOfBirth: selectedUser.dateOfBirth,
+      gender: selectedUser.gender,
+      physicalAddress: selectedUser.physicalAddress,
+      email: selectedUser.emailAddress,
+      phoneNumber: selectedUser.phoneNumber,
+      role: selectedUser.role,
+      password: "Cancer@123", // Hardcoded password
+      recoveryQuestion: "Who are we?", // Hardcoded recovery question
+      recoveryAnswer: "Skin Cancer", // Hardcoded recovery answer
+    };
+
+    try {
+      const response = await fetch(`http://localhost:5212/api/User/${selectedUser.userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(resetData),
+      });
+
+      if (response.ok) {
+        enqueueSnackbar("Password reset successfully", { variant: "success" });
+        // Refresh users data
+        const updatedUsers = await fetch("http://localhost:5212/api/User", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            accept: "*/*",
+          },
+        }).then((res) => res.json());
+        setUsers(updatedUsers);
+      } else {
+        const errorData = await response.json();
+        enqueueSnackbar(errorData.message || "Failed to reset password", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      enqueueSnackbar("An error occurred while resetting password", { variant: "error" });
+    } finally {
+      handleMenuClose();
+    }
   };
 
   const handleViewProfile = () => {
     console.log("View profile for:", selectedUser);
-    // Add your view profile logic here
     handleMenuClose();
   };
 
   const handleEditDetails = () => {
     console.log("Edit details for:", selectedUser);
-    // Add your edit details logic here
     handleMenuClose();
   };
 
   const handleDeleteUser = () => {
     console.log("Delete user:", selectedUser);
-    // Add your delete user logic here
     handleMenuClose();
   };
 
