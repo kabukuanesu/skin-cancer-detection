@@ -15,19 +15,59 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
+import Icon from "@mui/material/Icon";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { useState } from "react";
+
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
-import MDBadge from "components/MDBadge";
 
 // Image
 import profile from "assets/images/profile.jpg";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function data() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const handleMenuOpen = (event, user) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedUser(user);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedUser(null);
+  };
+
+  const handleResetPassword = () => {
+    console.log("Reset password for:", selectedUser);
+    // Add your reset password logic here
+    handleMenuClose();
+  };
+
+  const handleViewProfile = () => {
+    console.log("View profile for:", selectedUser);
+    // Add your view profile logic here
+    handleMenuClose();
+  };
+
+  const handleEditDetails = () => {
+    console.log("Edit details for:", selectedUser);
+    // Add your edit details logic here
+    handleMenuClose();
+  };
+
+  const handleDeleteUser = () => {
+    console.log("Delete user:", selectedUser);
+    // Add your delete user logic here
+    handleMenuClose();
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -71,12 +111,6 @@ export default function data() {
     </MDBox>
   );
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
-  };
-
   if (loading) {
     return {
       columns: [
@@ -102,8 +136,8 @@ export default function data() {
     columns: [
       { Header: "name", accessor: "user", width: "30%", align: "left" },
       { Header: "position", accessor: "position", align: "left" },
-      { Header: "gender", accessor: "status", align: "center" },
-      { Header: "last active", accessor: "lastseen", align: "center" },
+      { Header: "contact", accessor: "status", align: "center" },
+      { Header: "user id", accessor: "lastseen", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
 
@@ -115,21 +149,45 @@ export default function data() {
           email={user.emailAddress}
         />
       ),
-      position: <Position title={user.role} description={user.phoneNumber} />,
+      position: <Position title={user.role} description={user.gender} />,
       status: (
         <MDBox ml={-1}>
-          <MDBadge badgeContent={user.gender} color="success" variant="gradient" size="sm" />
+          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            {user.phoneNumber}
+          </MDTypography>
         </MDBox>
       ),
       lastseen: (
         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          {formatDate(user.dateUpdated)}
+          {user.userId}
         </MDTypography>
       ),
       action: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          Edit
-        </MDTypography>
+        <>
+          <MDTypography
+            component="a"
+            href="#"
+            variant="caption"
+            color="text"
+            fontWeight="medium"
+            onClick={(e) => handleMenuOpen(e, user)}
+            sx={{ cursor: "pointer" }}
+          >
+            <Icon>more_vert</Icon>
+          </MDTypography>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl && selectedUser?.userId === user.userId)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleResetPassword}>Reset Password</MenuItem>
+            <MenuItem onClick={handleViewProfile}>View Profile</MenuItem>
+            <MenuItem onClick={handleEditDetails}>Edit Details</MenuItem>
+            <MenuItem onClick={handleDeleteUser} sx={{ color: "error.main" }}>
+              Delete User
+            </MenuItem>
+          </Menu>
+        </>
       ),
     })),
   };
