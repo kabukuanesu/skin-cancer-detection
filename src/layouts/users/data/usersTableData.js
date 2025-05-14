@@ -18,8 +18,17 @@ Coded by www.creative-tim.com
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import MDButton from "components/MDButton";
+import MDSnackbar from "components/MDSnackbar";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -28,7 +37,6 @@ import MDAvatar from "components/MDAvatar";
 
 // Image
 import profile from "assets/images/profile.jpg";
-import { useEffect } from "react";
 
 export default function data() {
   const [users, setUsers] = useState([]);
@@ -36,6 +44,21 @@ export default function data() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState("");
+  const [editFormData, setEditFormData] = useState({
+    firstName: "",
+    lastName: "",
+    dateOfBirth: "",
+    gender: "",
+    physicalAddress: "",
+    email: "",
+    phoneNumber: "",
+    role: "",
+  });
+  const [infoSB, setInfoSB] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleMenuOpen = (event, user) => {
     setAnchorEl(event.currentTarget);
@@ -60,9 +83,9 @@ export default function data() {
       email: selectedUser.emailAddress,
       phoneNumber: selectedUser.phoneNumber,
       role: selectedUser.role,
-      password: "Cancer@123", // Hardcoded password
-      recoveryQuestion: "Who are we?", // Hardcoded recovery question
-      recoveryAnswer: "Skin Cancer", // Hardcoded recovery answer
+      password: "Cancer@123",
+      recoveryQuestion: "Who are we?",
+      recoveryAnswer: "Skin Cancer",
     };
 
     try {
@@ -76,16 +99,9 @@ export default function data() {
       });
 
       if (response.ok) {
-        enqueueSnackbar("Password reset successfully", { variant: "success" });
-        // Refresh users data
-        const updatedUsers = await fetch("http://localhost:5212/api/User", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            accept: "*/*",
-          },
-        }).then((res) => res.json());
-        setUsers(updatedUsers);
+        setSuccessMessage("Password reset successfully");
+        setInfoSB(true);
+        fetchUsers();
       } else {
         const errorData = await response.json();
         enqueueSnackbar(errorData.message || "Failed to reset password", { variant: "error" });
@@ -104,18 +120,30 @@ export default function data() {
   };
 
   const handleEditDetails = () => {
-    console.log("Edit details for:", selectedUser);
+    if (!selectedUser) return;
+    setEditFormData({
+      firstName: selectedUser.firstName,
+      lastName: selectedUser.lastName,
+      dateOfBirth: selectedUser.dateOfBirth,
+      gender: selectedUser.gender,
+      physicalAddress: selectedUser.physicalAddress,
+      email: selectedUser.emailAddress,
+      phoneNumber: selectedUser.phoneNumber,
+      role: selectedUser.role,
+    });
+    setEditOpen(true);
     handleMenuClose();
   };
 
   const handleDeleteUser = () => {
-    console.log("Delete user:", selectedUser);
+    setDeleteOpen(true);
+    setDeleteConfirmId("");
     handleMenuClose();
   };
 
-  useEffect(() => {
+  const fetchUsers = () => {
     const token = localStorage.getItem("authToken");
-
+    setLoading(true);
     fetch("http://localhost:5212/api/User", {
       method: "GET",
       headers: {
@@ -132,7 +160,91 @@ export default function data() {
         console.error("Error:", error);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchUsers();
   }, []);
+
+  const handleEditSubmit = async () => {
+    if (!selectedUser) return;
+
+    const token = localStorage.getItem("authToken");
+    const userData = {
+      ...editFormData,
+      password: "Cancer@123",
+      recoveryQuestion: "Who are we?",
+      recoveryAnswer: "Skin Cancer",
+    };
+
+    try {
+      const response = await fetch(`http://localhost:5212/api/User/${selectedUser.userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        setSuccessMessage("User details updated successfully");
+        setInfoSB(true);
+        fetchUsers();
+        setEditOpen(false);
+      } else {
+        const errorData = await response.json();
+        enqueueSnackbar(errorData.message || "Failed to update user details", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error updating user details:", error);
+      enqueueSnackbar("An error occurred while updating user details", { variant: "error" });
+    }
+  };
+
+  const handleDeleteSubmit = async () => {
+    if (!selectedUser || deleteConfirmId !== selectedUser.userId.toString()) {
+      enqueueSnackbar("Please enter the correct User ID to confirm deletion", { variant: "error" });
+      return;
+    }
+
+    const token = localStorage.getItem("authToken");
+    try {
+      const response = await fetch(`http://localhost:5212/api/User/${selectedUser.userId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        setSuccessMessage("User deleted successfully");
+        setInfoSB(true);
+        fetchUsers();
+        setDeleteOpen(false);
+      } else {
+        const errorData = await response.json();
+        enqueueSnackbar(errorData.message || "Failed to delete user", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      enqueueSnackbar("An error occurred while deleting user", { variant: "error" });
+    }
+  };
+
+  const closeInfoSB = () => setInfoSB(false);
+
+  const renderInfoSB = (
+    <MDSnackbar
+      icon="notifications"
+      title="User Management"
+      content={successMessage}
+      dateTime="Just Now"
+      open={infoSB}
+      onClose={closeInfoSB}
+      close={closeInfoSB}
+    />
+  );
 
   const User = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -175,6 +287,74 @@ export default function data() {
       ],
     };
   }
+
+  const EditDialog = () => (
+    <Dialog open={editOpen} onClose={() => setEditOpen(false)} fullWidth maxWidth="sm">
+      <DialogTitle>Edit User Details</DialogTitle>
+      <DialogContent>
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            paddingTop: 2,
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          {Object.keys(editFormData).map((key) => (
+            <TextField
+              key={key}
+              id={`edit-${key}`}
+              name={key}
+              label={key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
+              value={editFormData[key]}
+              onChange={(e) => setEditFormData({ ...editFormData, [key]: e.target.value })}
+              fullWidth
+              margin="normal"
+            />
+          ))}
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <MDButton variant="gradient" color="error" onClick={() => setEditOpen(false)}>
+          Cancel
+        </MDButton>
+        <MDButton variant="gradient" color="success" onClick={handleEditSubmit}>
+          Submit
+        </MDButton>
+      </DialogActions>
+    </Dialog>
+  );
+
+  const DeleteDialog = () => (
+    <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)} fullWidth maxWidth="sm">
+      <DialogTitle>Confirm User Deletion</DialogTitle>
+      <DialogContent>
+        <MDTypography variant="body1" mb={2}>
+          Are you sure you want to delete user {selectedUser?.userId}? Please confirm ID below.
+        </MDTypography>
+        <TextField
+          fullWidth
+          id="delete-confirm-id"
+          name="deleteConfirmId"
+          label="Enter User ID to confirm"
+          value={deleteConfirmId}
+          onChange={(e) => setDeleteConfirmId(e.target.value)}
+          margin="normal"
+        />
+      </DialogContent>
+      <DialogActions>
+        <MDButton variant="gradient" color="success" onClick={() => setDeleteOpen(false)}>
+          Cancel
+        </MDButton>
+        <MDButton variant="gradient" color="error" onClick={handleDeleteSubmit}>
+          Delete
+        </MDButton>
+      </DialogActions>
+    </Dialog>
+  );
 
   return {
     columns: [
@@ -234,5 +414,12 @@ export default function data() {
         </>
       ),
     })),
+    dialogs: (
+      <>
+        {renderInfoSB}
+        <EditDialog />
+        <DeleteDialog />
+      </>
+    ),
   };
 }
