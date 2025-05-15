@@ -59,19 +59,19 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Staff Registration",
-    key: "add-user",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/add-user",
-    component: <AddUser />,
-  },
-  {
-    type: "collapse",
     name: "Staff Members",
     key: "users",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/users",
     component: <Users />,
+  },
+  {
+    type: "collapse",
+    name: "Staff Registration",
+    key: "add-user",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/add-user",
+    component: <AddUser />,
   },
   {
     type: "title",
@@ -139,7 +139,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Start Workflow",
+    name: "Patient Registration",
     key: "add-patient",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/add-patient",
@@ -152,6 +152,14 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/patients",
     component: <Patients />,
+  },
+  {
+    type: "collapse",
+    name: "Start Workflow",
+    key: "lesion",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/lesion",
+    component: <Lesion />,
   },
   {
     type: "collapse",
@@ -187,7 +195,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Sign Up",
+    name: "Change Password",
     key: "sign-up",
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",

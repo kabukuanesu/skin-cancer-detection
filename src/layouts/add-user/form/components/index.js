@@ -133,6 +133,8 @@ export default function TextFields() {
           value={formData[key]}
           onChange={handleInputChange}
           required
+          type={key === "dateOfBirth" ? "date" : "text"}
+          InputLabelProps={key === "dateOfBirth" ? { shrink: true } : {}}
         />
       ))}
 

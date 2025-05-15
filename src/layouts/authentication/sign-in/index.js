@@ -209,7 +209,7 @@ function Basic() {
                   fontWeight="medium"
                   textGradient
                 >
-                  Sign up
+                  Contact Admin
                 </MDTypography>
               </MDTypography>
             </MDBox>

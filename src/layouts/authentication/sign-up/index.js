@@ -241,13 +241,13 @@ function Cover() {
                 Already updated?{" "}
                 <MDTypography
                   component={Link}
-                  to="/authentication/sign-in"
+                  to="/dashboard"
                   variant="button"
                   color="info"
                   fontWeight="medium"
                   textGradient
                 >
-                  Sign In
+                  Dashboard
                 </MDTypography>
               </MDTypography>
             </MDBox>

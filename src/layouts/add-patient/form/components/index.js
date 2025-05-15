@@ -46,21 +46,43 @@ export default function TextFields() {
 
   const handleInputChange = (event) => {
     const { id, value } = event.target;
-    setFormData({
+    const updatedFormData = {
       ...formData,
       [id]: value,
-    });
-  };
+    };
 
-  const handleCheckboxChange = (event) => {
-    const { id, checked } = event.target;
-    setFormData({
-      ...formData,
-      [id]: checked,
-    });
+    // Automatically set isScheduled based on scheduled date
+    if (id === "scheduled") {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selectedDate = new Date(value);
+      selectedDate.setHours(0, 0, 0, 0);
+
+      updatedFormData.isScheduled = selectedDate > today;
+    }
+
+    setFormData(updatedFormData);
   };
 
   const handleAddPatient = () => {
+    // Validate scheduled date is not before today
+    if (formData.scheduled) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selectedDate = new Date(formData.scheduled);
+      selectedDate.setHours(0, 0, 0, 0);
+
+      if (selectedDate < today) {
+        setNotification({
+          title: "Validation Error",
+          content: "Scheduled date cannot be before today",
+          isError: true,
+        });
+        setInfoSB(true);
+        return;
+      }
+    }
+
     const token = localStorage.getItem("authToken");
     const userData = JSON.parse(localStorage.getItem("userData"));
     const userId = userData?.userId || 0;
@@ -91,7 +113,6 @@ export default function TextFields() {
       body: JSON.stringify(patientData),
     })
       .then(async (response) => {
-        // First clone the response to read it as text
         const textResponse = response.clone();
         const textData = await textResponse.text();
 
@@ -99,12 +120,10 @@ export default function TextFields() {
           throw new Error(textData || "Registration failed");
         }
 
-        // Try to parse the text as JSON
         try {
           const jsonData = JSON.parse(textData);
           return jsonData;
         } catch (e) {
-          // If not JSON, return as plain text message
           return { message: textData };
         }
       })
@@ -145,6 +164,9 @@ export default function TextFields() {
   const handleNext = () => navigate("/lesion");
   const handleExit = () => navigate("/patients");
 
+  // Get today's date in YYYY-MM-DD format for the date input min attribute
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <Box
       component="form"
@@ -153,7 +175,7 @@ export default function TextFields() {
       autoComplete="off"
     >
       {Object.keys(formData)
-        .filter((key) => key !== "isScheduled")
+        .filter((key) => key !== "isScheduled") // Remove isScheduled from the fields to render
         .map((key) => (
           <TextField
             key={key}
@@ -161,34 +183,18 @@ export default function TextFields() {
             label={key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
             value={formData[key]}
             onChange={handleInputChange}
-            required
+            required={key !== "scheduled"} // Make scheduled optional
             type={key === "dateOfBirth" || key === "scheduled" ? "date" : "text"}
             InputLabelProps={key === "dateOfBirth" || key === "scheduled" ? { shrink: true } : {}}
+            inputProps={key === "scheduled" ? { min: today } : {}} // Prevent selecting dates before today
           />
         ))}
-
-      <Grid item xs={12}>
-        <label>
-          <input
-            type="checkbox"
-            id="isScheduled"
-            checked={formData.isScheduled}
-            onChange={handleCheckboxChange}
-          />
-          Schedule Patient
-        </label>
-      </Grid>
 
       <Grid item xs={12} sm={6} lg={3}>
         <MDButton variant="gradient" color="info" onClick={handleAddPatient} fullWidth>
           Register
         </MDButton>
         {renderInfoSB}
-      </Grid>
-      <Grid item xs={12} sm={6} lg={3}>
-        <MDButton variant="gradient" color="info" onClick={handleNext} fullWidth>
-          Next
-        </MDButton>
       </Grid>
       <Grid item xs={12} sm={6} lg={3}>
         <MDButton variant="gradient" color="info" onClick={handleExit} fullWidth>
