@@ -45,8 +45,12 @@ import FinalDiagnosis from "layouts/flow/final-diagnosis";
 import Treatment from "layouts/flow/treatment";
 import FollowUp from "layouts/flow/follow-up";
 
+// Single function pages
+import PatientProfile from "layouts/patients/profile";
+
 // @mui icons
 import Icon from "@mui/material/Icon";
+import Overview from "layouts/patients/profile";
 
 const routes = [
   {
@@ -136,6 +140,14 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/follow-up",
     component: <FollowUp />,
+  },
+  {
+    type: "title",
+    name: "Patient Profile",
+    key: "patient-profile",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/patient-profile/:patientId",
+    component: <PatientProfile />,
   },
   {
     type: "collapse",

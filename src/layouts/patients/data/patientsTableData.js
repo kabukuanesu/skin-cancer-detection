@@ -16,6 +16,7 @@ Coded by www.creative-tim.com
 */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -35,6 +36,7 @@ export default function data() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   const calculateAge = (dateOfBirth) => {
     const dob = new Date(dateOfBirth);
@@ -127,6 +129,10 @@ export default function data() {
     setSelectedPatient(null);
   };
 
+  const handleProfile = (patient) => {
+    navigate(`/patient-profile/${patient.patientId}`);
+  };
+
   const Patient = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -215,7 +221,7 @@ export default function data() {
             open={Boolean(anchorEl && selectedPatient?.patientId === patient.patientId)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleMenuClose}>View Details</MenuItem>
+            <MenuItem onClick={() => handleProfile(selectedPatient)}>View Details</MenuItem>
             <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
             <MenuItem onClick={handleMenuClose} sx={{ color: "error.main" }}>
               Delete
