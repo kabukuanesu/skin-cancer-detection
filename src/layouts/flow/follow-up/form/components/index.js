@@ -1,28 +1,33 @@
 import * as React from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import MDButton from "components/MDButton";
 import MDSnackbar from "components/MDSnackbar";
+import { useSnackbar } from "notistack";
 
 export default function TextFields() {
+  const { id } = useParams(); // treatmentId from URL
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = React.useState({
     followUpResult: "",
     followUpDescription: "",
-    isFollowUp: "",
-    followingUpDate: "",
   });
 
+  const [loading, setLoading] = useState(false);
   const [infoSB, setInfoSB] = useState(false);
+
   const closeInfoSB = () => setInfoSB(false);
 
   const renderInfoSB = (
     <MDSnackbar
       icon="notifications"
-      title="Follow Up Done"
-      content="Follow up saved successfully"
+      title="Follow Up Details"
+      content="Follow Up details saved successfully"
       dateTime="Just Now"
       open={infoSB}
       onClose={closeInfoSB}
@@ -38,67 +43,123 @@ export default function TextFields() {
     });
   };
 
-  const handleAddFollowUp = () => {
-    fetch("http://localhost:5013/api/FollowUp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        accept: "text/plain",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => {
-        // Handle the response from the API if needed
-        console.log("Data posted successfully!");
-        setInfoSB(true);
-        setFormData({
-          followUpResult: "",
-          followUpDescription: "",
-          isFollowUp: "",
-          followingUpDate: "",
-        });
-      })
-      .catch((error) => {
-        console.error("Error posting data:", error);
+  const handleAddFollowUp = async () => {
+    if (!formData.followUpResult || !formData.followUpDescription) {
+      enqueueSnackbar("Please fill in all required fields", { variant: "error" });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("authToken");
+      const userData = JSON.parse(localStorage.getItem("userData"));
+
+      if (!userData || !userData.userId) {
+        throw new Error("User data not found");
+      }
+
+      const followUpData = {
+        treatmentId: parseInt(id),
+        userId: userData.userId,
+        followUpResult: formData.followUpResult,
+        followUpDescription: formData.followUpDescription,
+        isFollowUp: true,
+      };
+
+      const response = await fetch("http://localhost:5212/api/Workflow/followup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          accept: "*/*",
+        },
+        body: JSON.stringify(followUpData),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to save follow up data");
+      }
+
+      // Handle both text and JSON responses
+      let responseData;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        responseData = await response.json();
+      } else {
+        responseData = await response.text(); // Handle plain text response
+      }
+
+      setInfoSB(true);
+      setFormData({
+        followUpResult: "",
+        followUpDescription: "",
+      });
+      enqueueSnackbar("Follow up saved successfully", { variant: "success" });
+
+      // Removed automatic navigation
+    } catch (error) {
+      console.error("Error posting data:", error);
+      enqueueSnackbar(error.message, { variant: "error" });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const navigate = useNavigate();
-  const handleNext = () => navigate("/treatment");
+  const handleNext = () => navigate(`/add-prediction`);
   const handleExit = () => navigate("/patients");
 
   return (
     <Box
       component="form"
-      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+      sx={{
+        "& > :not(style)": { m: 1, width: "100%" },
+        maxWidth: "800px",
+        margin: "0 auto",
+        padding: "20px",
+      }}
       noValidate
       autoComplete="off"
     >
-      {Object.keys(formData).map((key) => (
-        <TextField
-          key={key}
-          id={key}
-          label={key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
-          value={formData[key]}
-          onChange={handleInputChange}
-        />
-      ))}
+      <Grid container spacing={2}>
+        {Object.keys(formData).map((key) => (
+          <Grid item xs={12} md={6} key={key}>
+            <TextField
+              fullWidth
+              id={key}
+              label={key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
+              value={formData[key]}
+              onChange={handleInputChange}
+              variant="outlined"
+              required={key === "followUpResult" || key === "followUpDescription"}
+            />
+          </Grid>
+        ))}
 
-      <Grid item xs={12} sm={6} lg={3}>
-        <MDButton variant="gradient" color="info" onClick={handleAddFollowUp} fullWidth>
-          Save
-        </MDButton>
-        {renderInfoSB}
-      </Grid>
-      <Grid item xs={12} sm={6} lg={3}>
-        <MDButton variant="gradient" color="info" onClick={handleNext} fullWidth>
-          New Treatment
-        </MDButton>
-      </Grid>
-      <Grid item xs={12} sm={6} lg={3}>
-        <MDButton variant="gradient" color="info" onClick={handleExit} fullWidth>
-          Exit
-        </MDButton>
+        <Grid item xs={12} container spacing={2} justifyContent="flex-end">
+          <Grid item xs={12} sm={4} md={3}>
+            <MDButton
+              variant="gradient"
+              color="info"
+              onClick={handleAddFollowUp}
+              fullWidth
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </MDButton>
+            {renderInfoSB}
+          </Grid>
+          <Grid item xs={12} sm={4} md={3}>
+            <MDButton variant="gradient" color="info" onClick={handleNext} fullWidth>
+              Next
+            </MDButton>
+          </Grid>
+          <Grid item xs={12} sm={4} md={3}>
+            <MDButton variant="gradient" color="info" onClick={handleExit} fullWidth>
+              Exit
+            </MDButton>
+          </Grid>
+        </Grid>
       </Grid>
     </Box>
   );

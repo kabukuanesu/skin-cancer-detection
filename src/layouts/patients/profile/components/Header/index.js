@@ -70,7 +70,7 @@ function Header({ children }) {
         display="flex"
         alignItems="center"
         position="relative"
-        minHeight="5.55rem"
+        minHeight="3.33rem"
         borderRadius="xl"
         sx={{
           backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>

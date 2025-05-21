@@ -82,7 +82,7 @@ const routes = [
     name: "Add Lesion",
     key: "lesion",
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/lesion",
+    route: "/lesion/:patientId",
     component: <Lesion />,
   },
   {
@@ -90,7 +90,7 @@ const routes = [
     name: "Add Image",
     key: "image",
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/image",
+    route: "/image/:id",
     component: <Image />,
   },
   {
@@ -98,7 +98,7 @@ const routes = [
     name: "Add Prediction",
     key: "add-prediction",
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/add-prediction",
+    route: "/add-prediction/:id",
     component: <ModelPrediction />,
   },
   {
@@ -122,7 +122,7 @@ const routes = [
     name: "Final Diagnosis",
     key: "final-diagnosis",
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/final-diagnosis",
+    route: "/final-diagnosis/:id",
     component: <FinalDiagnosis />,
   },
   {
@@ -130,7 +130,7 @@ const routes = [
     name: "Treatment",
     key: "treatment",
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/treatment",
+    route: "/treatment/:id",
     component: <Treatment />,
   },
   {
@@ -138,7 +138,7 @@ const routes = [
     name: "Follow Up",
     key: "follow-up",
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/follow-up",
+    route: "/follow-up/:id",
     component: <FollowUp />,
   },
   {
@@ -164,14 +164,6 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/patients",
     component: <Patients />,
-  },
-  {
-    type: "collapse",
-    name: "Start Workflow",
-    key: "lesion",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/lesion",
-    component: <Lesion />,
   },
   {
     type: "collapse",
