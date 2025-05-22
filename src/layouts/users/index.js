@@ -14,11 +14,9 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import usersTableData from "layouts/users/data/usersTableData";
-import progressTableData from "layouts/patients/data/progressTableData";
 
 function Tables() {
-  const { columns, rows } = usersTableData();
-  const { columns: pColumns, rows: pRows } = progressTableData();
+  const { columns, rows, dialogs } = usersTableData();
 
   return (
     <DashboardLayout>
@@ -49,6 +47,8 @@ function Tables() {
                   showTotalEntries={false}
                   noEndBorder
                 />
+                {/* Render the dialogs */}
+                {dialogs}
               </MDBox>
             </Card>
           </Grid>

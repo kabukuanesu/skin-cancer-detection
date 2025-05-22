@@ -138,9 +138,9 @@ function Configurator() {
         px={3}
       >
         <MDBox>
-          <MDTypography variant="h5">Material UI Configurator</MDTypography>
+          <MDTypography variant="h5">DermoSight UI Configurator</MDTypography>
           <MDTypography variant="body2" color="text">
-            See our dashboard options.
+            See the dashboard options.
           </MDTypography>
         </MDBox>
 
@@ -295,7 +295,7 @@ function Configurator() {
             variant="outlined"
             fullWidth
           >
-            view documentation
+            visit our clinic website
           </MDButton>
         </MDBox>
         <MDBox display="flex" justifyContent="center">

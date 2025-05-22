@@ -47,6 +47,7 @@ import FollowUp from "layouts/flow/follow-up";
 
 // Single function pages
 import PatientProfile from "layouts/patients/profile";
+import UserProfile from "layouts/users/profile";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -148,6 +149,14 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/patient-profile/:patientId",
     component: <PatientProfile />,
+  },
+  {
+    type: "title",
+    name: "User Profile",
+    key: "user-profile",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/user-profile/:userId",
+    component: <UserProfile />,
   },
   {
     type: "collapse",

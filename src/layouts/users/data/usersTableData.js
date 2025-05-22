@@ -1,24 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -29,13 +15,9 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
-
-// Image
 import profile from "assets/images/profile.jpg";
 
 export default function data() {
@@ -44,6 +26,7 @@ export default function data() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState("");
@@ -59,6 +42,32 @@ export default function data() {
   });
   const [infoSB, setInfoSB] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+
+  const fetchUsers = useCallback(() => {
+    const token = localStorage.getItem("authToken");
+    setLoading(true);
+    fetch("http://localhost:5212/api/User", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        accept: "*/*",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUsers(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        enqueueSnackbar("Failed to fetch users", { variant: "error" });
+        setLoading(false);
+      });
+  }, [enqueueSnackbar]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const handleMenuOpen = (event, user) => {
     setAnchorEl(event.currentTarget);
@@ -115,7 +124,8 @@ export default function data() {
   };
 
   const handleViewProfile = () => {
-    console.log("View profile for:", selectedUser);
+    if (!selectedUser) return;
+    navigate(`/user-profile/${selectedUser.userId}`);
     handleMenuClose();
   };
 
@@ -140,31 +150,6 @@ export default function data() {
     setDeleteConfirmId("");
     handleMenuClose();
   };
-
-  const fetchUsers = () => {
-    const token = localStorage.getItem("authToken");
-    setLoading(true);
-    fetch("http://localhost:5212/api/User", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        accept: "*/*",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setUsers(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   const handleEditSubmit = async () => {
     if (!selectedUser) return;
@@ -267,66 +252,51 @@ export default function data() {
     </MDBox>
   );
 
-  if (loading) {
-    return {
-      columns: [
-        { Header: "user", accessor: "user", width: "45%", align: "left" },
-        { Header: "position", accessor: "position", align: "left" },
-        { Header: "status", accessor: "status", align: "center" },
-        { Header: "last seen", accessor: "lastseen", align: "center" },
-        { Header: "action", accessor: "action", align: "center" },
-      ],
-      rows: [
-        {
-          user: <MDTypography>Loading...</MDTypography>,
-          position: "",
-          status: "",
-          lastseen: "",
-          action: "",
-        },
-      ],
+  const EditDialog = () => {
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setEditFormData((prev) => ({ ...prev, [name]: value }));
     };
-  }
 
-  const EditDialog = () => (
-    <Dialog open={editOpen} onClose={() => setEditOpen(false)} fullWidth maxWidth="sm">
-      <DialogTitle>Edit User Details</DialogTitle>
-      <DialogContent>
-        <Box
-          component="form"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            paddingTop: 2,
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          {Object.keys(editFormData).map((key) => (
-            <TextField
-              key={key}
-              id={`edit-${key}`}
-              name={key}
-              label={key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
-              value={editFormData[key]}
-              onChange={(e) => setEditFormData({ ...editFormData, [key]: e.target.value })}
-              fullWidth
-              margin="normal"
-            />
-          ))}
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <MDButton variant="gradient" color="error" onClick={() => setEditOpen(false)}>
-          Cancel
-        </MDButton>
-        <MDButton variant="gradient" color="success" onClick={handleEditSubmit}>
-          Submit
-        </MDButton>
-      </DialogActions>
-    </Dialog>
-  );
+    return (
+      <Dialog open={editOpen} onClose={() => setEditOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Edit User Details</DialogTitle>
+        <DialogContent>
+          <Box
+            component="form"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              paddingTop: 2,
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            {Object.entries(editFormData).map(([key, value]) => (
+              <TextField
+                key={key}
+                name={key}
+                label={key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
+                value={value}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+            ))}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <MDButton variant="gradient" color="error" onClick={() => setEditOpen(false)}>
+            Cancel
+          </MDButton>
+          <MDButton variant="gradient" color="success" onClick={handleEditSubmit}>
+            Submit
+          </MDButton>
+        </DialogActions>
+      </Dialog>
+    );
+  };
 
   const DeleteDialog = () => (
     <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)} fullWidth maxWidth="sm">
@@ -356,6 +326,27 @@ export default function data() {
     </Dialog>
   );
 
+  if (loading) {
+    return {
+      columns: [
+        { Header: "user", accessor: "user", width: "45%", align: "left" },
+        { Header: "position", accessor: "position", align: "left" },
+        { Header: "contact", accessor: "status", align: "center" },
+        { Header: "user id", accessor: "lastseen", align: "center" },
+        { Header: "action", accessor: "action", align: "center" },
+      ],
+      rows: [
+        {
+          user: <MDTypography>Loading...</MDTypography>,
+          position: "",
+          status: "",
+          lastseen: "",
+          action: "",
+        },
+      ],
+    };
+  }
+
   return {
     columns: [
       { Header: "name", accessor: "user", width: "30%", align: "left" },
@@ -364,7 +355,6 @@ export default function data() {
       { Header: "user id", accessor: "lastseen", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
-
     rows: users.map((user) => ({
       user: (
         <User
@@ -404,9 +394,9 @@ export default function data() {
             open={Boolean(anchorEl && selectedUser?.userId === user.userId)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleResetPassword}>Reset Password</MenuItem>
             <MenuItem onClick={handleViewProfile}>View Profile</MenuItem>
             <MenuItem onClick={handleEditDetails}>Edit Details</MenuItem>
+            <MenuItem onClick={handleResetPassword}>Reset Password</MenuItem>
             <MenuItem onClick={handleDeleteUser} sx={{ color: "error.main" }}>
               Delete User
             </MenuItem>
