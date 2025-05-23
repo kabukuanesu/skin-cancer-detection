@@ -99,7 +99,7 @@ export default function LesionForm() {
   };
 
   const handleNext = () => navigate(`/image/${patientId}`);
-  const handleExit = () => navigate("/patients");
+  const handleExit = () => navigate(-1);
 
   return (
     <Box
@@ -143,12 +143,12 @@ export default function LesionForm() {
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
             <MDButton variant="gradient" color="info" onClick={handleNext} fullWidth>
-              Next
+              Details
             </MDButton>
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
             <MDButton variant="gradient" color="info" onClick={handleExit} fullWidth>
-              Exit
+              Back
             </MDButton>
           </Grid>
         </Grid>

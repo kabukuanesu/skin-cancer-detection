@@ -395,11 +395,13 @@ export default function data() {
             onClose={handleMenuClose}
           >
             <MenuItem onClick={handleViewProfile}>View Profile</MenuItem>
-            <MenuItem onClick={handleEditDetails}>Edit Details</MenuItem>
-            <MenuItem onClick={handleResetPassword}>Reset Password</MenuItem>
-            <MenuItem onClick={handleDeleteUser} sx={{ color: "error.main" }}>
-              Delete User
+            {/* <MenuItem onClick={handleEditDetails}>Edit Details</MenuItem> */}
+            <MenuItem onClick={handleResetPassword} sx={{ color: "error.main" }}>
+              Reset Password
             </MenuItem>
+            {/* <MenuItem onClick={handleDeleteUser} sx={{ color: "error.main" }}>
+              Delete User
+            </MenuItem> */}
           </Menu>
         </>
       ),

@@ -198,7 +198,7 @@ export default function TextFields() {
       </Grid>
       <Grid item xs={12} sm={6} lg={3}>
         <MDButton variant="gradient" color="info" onClick={handleExit} fullWidth>
-          Exit
+          View Patients
         </MDButton>
       </Grid>
     </Box>

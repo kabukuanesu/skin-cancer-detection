@@ -221,11 +221,11 @@ export default function data() {
             open={Boolean(anchorEl && selectedPatient?.patientId === patient.patientId)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => handleProfile(selectedPatient)}>View Details</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
+            <MenuItem onClick={() => handleProfile(selectedPatient)}>Patient Details</MenuItem>
+            {/*  <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
             <MenuItem onClick={handleMenuClose} sx={{ color: "error.main" }}>
               Delete
-            </MenuItem>
+            </MenuItem> */}
           </Menu>
         </>
       ),
