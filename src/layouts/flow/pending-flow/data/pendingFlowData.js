@@ -15,6 +15,7 @@ import profile from "assets/images/profile.jpg";
 
 export default function usePatientData() {
   const [patientsData, setPatientsData] = useState([]);
+  const [filteredPatients, setFilteredPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ export default function usePatientData() {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("authToken");
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const userRole = userData?.role || "";
 
       try {
         // Fetch all patients
@@ -65,7 +68,32 @@ export default function usePatientData() {
           })
         );
 
+        // Filter patients based on user role
+        let filtered = [];
+        switch (userRole) {
+          case "Dermatologist":
+            filtered = patientsWithWorkflow; // Show all patients
+            break;
+          case "Admin":
+            filtered = patientsWithWorkflow.filter(
+              (patient) => patient.workflowStatus?.table === "Treatment"
+            );
+            break;
+          case "Doctor":
+          case "Nurse":
+            filtered = patientsWithWorkflow.filter(
+              (patient) =>
+                patient.workflowStatus?.table === "Lesion" ||
+                patient.workflowStatus?.table === "Image"
+            );
+            break;
+          default:
+            filtered = []; // Unknown role - show nothing
+            break;
+        }
+
         setPatientsData(patientsWithWorkflow);
+        setFilteredPatients(filtered);
         setLoading(false);
       } catch (error) {
         console.error("Error:", error);
@@ -241,7 +269,7 @@ export default function usePatientData() {
     };
   }
 
-  const rows = patientsData.map((patient) => {
+  const rows = filteredPatients.map((patient) => {
     const nextStage = patient.workflowStatus
       ? getNextStage(patient.workflowStatus.table)
       : "Lesion";
