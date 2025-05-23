@@ -26,7 +26,7 @@ import AddUser from "layouts/add-user";
 import AddPatient from "layouts/add-patient";
 import Users from "layouts/users";
 import Patients from "layouts/patients";
-import Logs from "layouts/logs";
+import Pending from "layouts/flow/pending-flow";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
 import RTL from "layouts/rtl";
@@ -176,11 +176,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Reports",
-    key: "logs",
+    name: "Pending",
+    key: "pending-flow",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/logs",
-    component: <Logs />,
+    route: "/pending-flow",
+    component: <Pending />,
   },
   {
     type: "collapse",
