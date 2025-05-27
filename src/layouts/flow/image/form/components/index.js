@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -7,6 +7,12 @@ import Grid from "@mui/material/Grid";
 import MDButton from "components/MDButton";
 import MDSnackbar from "components/MDSnackbar";
 import { useSnackbar } from "notistack";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 
 export default function ImageForm() {
   const { id } = useParams(); // lesionId from URL
@@ -21,10 +27,44 @@ export default function ImageForm() {
     illuminationType: "",
   });
 
+  const [lesionDetails, setLesionDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [infoSB, setInfoSB] = useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchLesionDetails = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await fetch(`http://localhost:5212/api/Workflow/lesion/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch lesion details");
+        }
+
+        const data = await response.json();
+        setLesionDetails(data);
+      } catch (error) {
+        console.error("Error fetching lesion details:", error);
+        enqueueSnackbar("Failed to load lesion details", { variant: "error" });
+      }
+    };
+
+    fetchLesionDetails();
+  }, [id, enqueueSnackbar]);
 
   const closeInfoSB = () => setInfoSB(false);
+  const handleDetailsDialogOpen = () => setDetailsDialogOpen(true);
+  const handleDetailsDialogClose = () => setDetailsDialogOpen(false);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(); // Formats date based on user's locale
+  };
 
   const renderInfoSB = (
     <MDSnackbar
@@ -104,8 +144,6 @@ export default function ImageForm() {
         illuminationType: "",
       });
       enqueueSnackbar("Image saved successfully", { variant: "success" });
-
-      // Removed automatic navigation
     } catch (error) {
       console.error("Error posting data:", error);
       enqueueSnackbar(error.message, { variant: "error" });
@@ -114,8 +152,7 @@ export default function ImageForm() {
     }
   };
 
-  const handleNext = () => navigate(`/add-prediction`);
-  const handleExit = () => navigate("/patients");
+  const handleExit = () => navigate(-1);
 
   return (
     <Box
@@ -158,8 +195,14 @@ export default function ImageForm() {
             {renderInfoSB}
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
-            <MDButton variant="gradient" color="info" onClick={handleNext} fullWidth>
-              Next
+            <MDButton
+              variant="gradient"
+              color="info"
+              onClick={handleDetailsDialogOpen}
+              fullWidth
+              disabled={!lesionDetails}
+            >
+              Details
             </MDButton>
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
@@ -169,6 +212,59 @@ export default function ImageForm() {
           </Grid>
         </Grid>
       </Grid>
+
+      {/* Lesion Details Dialog */}
+      <Dialog open={detailsDialogOpen} onClose={handleDetailsDialogClose} maxWidth="md" fullWidth>
+        <DialogTitle>Lesion Details</DialogTitle>
+        <DialogContent dividers>
+          {lesionDetails ? (
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1">
+                  <strong>Location:</strong> {lesionDetails.lesionLocation}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>Date of Detection:</strong> {formatDate(lesionDetails.dateOfDetection)}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>Date of Examination:</strong>{" "}
+                  {formatDate(lesionDetails.dateOfExamination)}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1">
+                  <strong>Description:</strong> {lesionDetails.lesionDescription}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1">
+                  <strong>Dermoscopic Features:</strong> {lesionDetails.dermoscopicFeatures}
+                </Typography>
+              </Grid>
+            </Grid>
+          ) : (
+            <Typography>Loading lesion details...</Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <MDButton onClick={handleDetailsDialogClose} color="info">
+            Close
+          </MDButton>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

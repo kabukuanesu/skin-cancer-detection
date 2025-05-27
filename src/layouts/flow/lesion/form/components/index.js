@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -7,6 +7,12 @@ import Grid from "@mui/material/Grid";
 import MDButton from "components/MDButton";
 import MDSnackbar from "components/MDSnackbar";
 import { useSnackbar } from "notistack";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 
 export default function LesionForm() {
   const { patientId } = useParams();
@@ -19,10 +25,52 @@ export default function LesionForm() {
     dermoscopicFeatures: "",
   });
 
+  const [patientDetails, setPatientDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [infoSB, setInfoSB] = useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchPatientDetails = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await fetch(`http://localhost:5212/api/Workflow/patient/${patientId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch patient details");
+        }
+
+        const data = await response.json();
+        setPatientDetails(data);
+      } catch (error) {
+        console.error("Error fetching patient details:", error);
+        enqueueSnackbar("Failed to load patient details", { variant: "error" });
+      }
+    };
+
+    fetchPatientDetails();
+  }, [patientId, enqueueSnackbar]);
 
   const closeInfoSB = () => setInfoSB(false);
+  const handleDetailsDialogOpen = () => setDetailsDialogOpen(true);
+  const handleDetailsDialogClose = () => setDetailsDialogOpen(false);
+
+  const calculateAge = (dateOfBirth) => {
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
 
   const renderInfoSB = (
     <MDSnackbar
@@ -142,7 +190,13 @@ export default function LesionForm() {
             {renderInfoSB}
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
-            <MDButton variant="gradient" color="info" onClick={handleNext} fullWidth>
+            <MDButton
+              variant="gradient"
+              color="info"
+              onClick={handleDetailsDialogOpen}
+              fullWidth
+              disabled={!patientDetails}
+            >
               Details
             </MDButton>
           </Grid>
@@ -153,6 +207,86 @@ export default function LesionForm() {
           </Grid>
         </Grid>
       </Grid>
+
+      {/* Patient Details Dialog */}
+      <Dialog open={detailsDialogOpen} onClose={handleDetailsDialogClose} maxWidth="md" fullWidth>
+        <DialogTitle>Patient Details</DialogTitle>
+        <DialogContent dividers>
+          {patientDetails ? (
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>First Name:</strong> {patientDetails.firstName}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>Last Name:</strong> {patientDetails.lastName}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>Age:</strong> {calculateAge(patientDetails.dateOfBirth)} years
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>Gender:</strong> {patientDetails.gender}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>Physical Address:</strong> {patientDetails.physicalAddress}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>Email:</strong> {patientDetails.emailAddress}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>Phone:</strong> {patientDetails.phoneNumber}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>Medical History:</strong> {patientDetails.medicalHistory}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1">
+                  <strong>Family History:</strong> {patientDetails.familyHistory}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1">
+                  <strong>Skin Type:</strong> {patientDetails.skinType}
+                </Typography>
+              </Grid>
+            </Grid>
+          ) : (
+            <Typography>Loading patient details...</Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <MDButton onClick={handleDetailsDialogClose} color="info">
+            Close
+          </MDButton>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -9,6 +9,11 @@ import MDSnackbar from "components/MDSnackbar";
 import { useSnackbar } from "notistack";
 import MDTypography from "components/MDTypography";
 import CircularProgress from "@mui/material/CircularProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Divider from "@mui/material/Divider";
 
 export default function PredictionForm() {
   const { id } = useParams(); // imageId from URL
@@ -20,12 +25,46 @@ export default function PredictionForm() {
     confidenceScore: "",
   });
 
+  const [imageDetails, setImageDetails] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [infoSB, setInfoSB] = useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchImageDetails = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await fetch(`http://localhost:5212/api/Workflow/image/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch image details");
+        }
+
+        const data = await response.json();
+        setImageDetails(data);
+      } catch (error) {
+        console.error("Error fetching image details:", error);
+        enqueueSnackbar("Failed to load image details", { variant: "error" });
+      }
+    };
+
+    fetchImageDetails();
+  }, [id, enqueueSnackbar]);
 
   const closeInfoSB = () => setInfoSB(false);
+  const handleDetailsDialogOpen = () => setDetailsDialogOpen(true);
+  const handleDetailsDialogClose = () => setDetailsDialogOpen(false);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
 
   const renderInfoSB = (
     <MDSnackbar
@@ -41,7 +80,6 @@ export default function PredictionForm() {
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
-    // Clear previous results when new file is selected
     setFormData({
       predictionResult: "",
       confidenceScore: "",
@@ -75,7 +113,6 @@ export default function PredictionForm() {
 
       const predictionData = await response.json();
 
-      // Auto-populate form fields with prediction results
       setFormData({
         predictionResult: predictionData.predicted_class,
         confidenceScore: predictionData.confidence_score.toString(),
@@ -130,7 +167,6 @@ export default function PredictionForm() {
       setInfoSB(true);
       enqueueSnackbar("Prediction saved successfully", { variant: "success" });
 
-      // Reset form fields after successful save
       setFormData({
         predictionResult: "",
         confidenceScore: "",
@@ -144,8 +180,7 @@ export default function PredictionForm() {
     }
   };
 
-  const handleNext = () => navigate("/final-diagnosis");
-  const handleExit = () => navigate("/patients");
+  const handleExit = () => navigate(-1);
 
   return (
     <Box sx={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
@@ -236,11 +271,11 @@ export default function PredictionForm() {
               <MDButton
                 variant="gradient"
                 color="info"
-                onClick={handleNext}
+                onClick={handleDetailsDialogOpen}
                 fullWidth
-                disabled={!formData.predictionResult}
+                disabled={!imageDetails}
               >
-                Next
+                Details
               </MDButton>
             </Grid>
             <Grid item xs={12} sm={4} md={3}>
@@ -251,6 +286,63 @@ export default function PredictionForm() {
           </Grid>
         </Grid>
       </Box>
+
+      {/* Image Details Dialog */}
+      <Dialog open={detailsDialogOpen} onClose={handleDetailsDialogClose} maxWidth="md" fullWidth>
+        <DialogTitle>Image Details</DialogTitle>
+        <DialogContent dividers>
+          {imageDetails ? (
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <MDTypography variant="subtitle1">
+                  <strong>Image Type:</strong> {imageDetails.imageType}
+                </MDTypography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <MDTypography variant="subtitle1">
+                  <strong>Camera Model:</strong> {imageDetails.cameraModel}
+                </MDTypography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12}>
+                <MDTypography variant="subtitle1">
+                  <strong>Description:</strong> {imageDetails.imageDescription}
+                </MDTypography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <MDTypography variant="subtitle1">
+                  <strong>Resolution:</strong> {imageDetails.resolution}
+                </MDTypography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <MDTypography variant="subtitle1">
+                  <strong>Illumination Type:</strong> {imageDetails.illuminationType}
+                </MDTypography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12}>
+                <MDTypography variant="subtitle1">
+                  <strong>Date Taken:</strong> {formatDate(imageDetails.dateTaken)}
+                </MDTypography>
+              </Grid>
+            </Grid>
+          ) : (
+            <MDTypography>Loading image details...</MDTypography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <MDButton onClick={handleDetailsDialogClose} color="info">
+            Close
+          </MDButton>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 

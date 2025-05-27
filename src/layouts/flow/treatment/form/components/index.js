@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -7,6 +7,12 @@ import Grid from "@mui/material/Grid";
 import MDButton from "components/MDButton";
 import MDSnackbar from "components/MDSnackbar";
 import { useSnackbar } from "notistack";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 
 export default function TextFields() {
   const { id } = useParams(); // finalDiagnosisId from URL
@@ -18,10 +24,39 @@ export default function TextFields() {
     treatmentDescription: "",
   });
 
+  const [finalDiagnosisDetails, setFinalDiagnosisDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [infoSB, setInfoSB] = useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchFinalDiagnosisDetails = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await fetch(`http://localhost:5212/api/Workflow/finaldiagnosis/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch final diagnosis details");
+        }
+
+        const data = await response.json();
+        setFinalDiagnosisDetails(data);
+      } catch (error) {
+        console.error("Error fetching final diagnosis details:", error);
+        enqueueSnackbar("Failed to load final diagnosis details", { variant: "error" });
+      }
+    };
+
+    fetchFinalDiagnosisDetails();
+  }, [id, enqueueSnackbar]);
 
   const closeInfoSB = () => setInfoSB(false);
+  const handleDetailsDialogOpen = () => setDetailsDialogOpen(true);
+  const handleDetailsDialogClose = () => setDetailsDialogOpen(false);
 
   const renderInfoSB = (
     <MDSnackbar
@@ -81,13 +116,12 @@ export default function TextFields() {
         throw new Error("Failed to save treatment data");
       }
 
-      // Handle both text and JSON responses
       let responseData;
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         responseData = await response.json();
       } else {
-        responseData = await response.text(); // Handle plain text response
+        responseData = await response.text();
       }
 
       setInfoSB(true);
@@ -96,8 +130,6 @@ export default function TextFields() {
         treatmentDescription: "",
       });
       enqueueSnackbar("Treatment saved successfully", { variant: "success" });
-
-      // Removed automatic navigation
     } catch (error) {
       console.error("Error posting data:", error);
       enqueueSnackbar(error.message, { variant: "error" });
@@ -106,8 +138,7 @@ export default function TextFields() {
     }
   };
 
-  const handleNext = () => navigate(`/add-prediction`);
-  const handleExit = () => navigate("/patients");
+  const handleExit = () => navigate(-1);
 
   return (
     <Box
@@ -150,8 +181,14 @@ export default function TextFields() {
             {renderInfoSB}
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
-            <MDButton variant="gradient" color="info" onClick={handleNext} fullWidth>
-              Next
+            <MDButton
+              variant="gradient"
+              color="info"
+              onClick={handleDetailsDialogOpen}
+              fullWidth
+              disabled={!finalDiagnosisDetails}
+            >
+              Details
             </MDButton>
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
@@ -161,6 +198,37 @@ export default function TextFields() {
           </Grid>
         </Grid>
       </Grid>
+
+      {/* Final Diagnosis Details Dialog */}
+      <Dialog open={detailsDialogOpen} onClose={handleDetailsDialogClose} maxWidth="sm" fullWidth>
+        <DialogTitle>Final Diagnosis Details</DialogTitle>
+        <DialogContent dividers>
+          {finalDiagnosisDetails ? (
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1">
+                  <strong>Final Result:</strong> {finalDiagnosisDetails.finalResult}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1">
+                  <strong>Description:</strong> {finalDiagnosisDetails.finalResultDescription}
+                </Typography>
+              </Grid>
+            </Grid>
+          ) : (
+            <Typography>Loading final diagnosis details...</Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <MDButton onClick={handleDetailsDialogClose} color="info">
+            Close
+          </MDButton>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
