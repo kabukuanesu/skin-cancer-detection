@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -38,6 +39,11 @@ function Projects() {
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 
+  const navigate = useNavigate();
+  const handlePatients = () => navigate("/patients");
+  const handlePending = () => navigate("/pending-flow");
+  const handleStaff = () => navigate("/users");
+
   const renderMenu = (
     <Menu
       id="simple-menu"
@@ -53,9 +59,9 @@ function Projects() {
       open={Boolean(menu)}
       onClose={closeMenu}
     >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
+      <MenuItem onClick={handlePatients}>All Patients</MenuItem>
+      <MenuItem onClick={handlePending}>Pending</MenuItem>
+      <MenuItem onClick={handleStaff}>Staff</MenuItem>
     </Menu>
   );
 
@@ -64,7 +70,7 @@ function Projects() {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Projects
+            Pending
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
