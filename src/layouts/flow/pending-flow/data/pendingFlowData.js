@@ -10,7 +10,7 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import MDProgress from "components/MDProgress";
 
-// Images
+// Image
 import profile from "assets/images/profile.jpg";
 
 export default function usePatientData() {

@@ -48,10 +48,10 @@ import FollowUp from "layouts/flow/follow-up";
 // Single function pages
 import PatientProfile from "layouts/patients/profile";
 import UserProfile from "layouts/users/profile";
+import Logs from "layouts/logs";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-import Overview from "layouts/patients/profile";
 
 const routes = [
   {
@@ -192,11 +192,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Support",
+    name: "Reports",
     key: "notifications",
     icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
+    route: "/logs",
+    component: <Logs />,
   },
   {
     type: "collapse",
