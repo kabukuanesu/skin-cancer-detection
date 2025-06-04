@@ -193,7 +193,7 @@ const routes = [
   {
     type: "collapse",
     name: "Reports",
-    key: "notifications",
+    key: "logs",
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/logs",
     component: <Logs />,
