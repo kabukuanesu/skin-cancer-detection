@@ -52,6 +52,13 @@ import Logs from "layouts/logs";
 
 // Logs tables
 import AppUsersTable from "layouts/logs/tables/users";
+import LogPatients from "layouts/logs/tables/patients";
+import LogLesions from "layouts/logs/tables/lesions";
+import LogImages from "layouts/logs/tables/images";
+import LogPredictions from "layouts/logs/tables/predictions";
+import LogDiagnoses from "layouts/logs/tables/diagnoses";
+import LogTreatments from "layouts/logs/tables/treatments";
+import LogBookings from "layouts/logs/tables/bookings";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -168,6 +175,62 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/app-users",
     component: <AppUsersTable />,
+  },
+  {
+    type: "title",
+    name: "Log Patients",
+    key: "log-patients",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/log-patients",
+    component: <LogPatients />,
+  },
+  {
+    type: "title",
+    name: "Log Lesions",
+    key: "log-lesions",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/log-lesions",
+    component: <LogLesions />,
+  },
+  {
+    type: "title",
+    name: "Log Images",
+    key: "log-images",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/log-images",
+    component: <LogImages />,
+  },
+  {
+    type: "title",
+    name: "Log Predictions",
+    key: "log-predictions",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/log-predictions",
+    component: <LogPredictions />,
+  },
+  {
+    type: "title",
+    name: "Log Diagnoses",
+    key: "log-diagnoses",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/log-diagnoses",
+    component: <LogDiagnoses />,
+  },
+  {
+    type: "title",
+    name: "Log Treatments",
+    key: "log-treatments",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/log-treatments",
+    component: <LogTreatments />,
+  },
+  {
+    type: "title",
+    name: "Log Bookings",
+    key: "log-bookings",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/log-bookings",
+    component: <LogBookings />,
   },
   {
     type: "collapse",

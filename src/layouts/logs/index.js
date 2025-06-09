@@ -29,6 +29,13 @@ function Logs() {
   const handleSearch = () => navigate("/pending");
 
   const handleViewAppUsers = () => navigate("/app-users");
+  const handleViewPatients = () => navigate("/log-patients");
+  const handleViewLesions = () => navigate("/log-lesions");
+  const handleViewImages = () => navigate("/log-images");
+  const handleViewPredictions = () => navigate("/log-predictions");
+  const handleViewDiagnoses = () => navigate("/log-diagnoses");
+  const handleViewTreatments = () => navigate("/log-treatments");
+  const handleViewBookings = () => navigate("/log-bookings");
 
   return (
     <DashboardLayout>
@@ -65,7 +72,7 @@ function Logs() {
                 icon="person_add"
                 title="Patients Data"
                 count={
-                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewPatients} style={{ cursor: "pointer" }}>
                     View
                   </span>
                 }
@@ -88,7 +95,7 @@ function Logs() {
                 icon="person_add"
                 title="Lesions Data"
                 count={
-                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewLesions} style={{ cursor: "pointer" }}>
                     View
                   </span>
                 }
@@ -111,7 +118,7 @@ function Logs() {
                 icon="person_add"
                 title="Images Data"
                 count={
-                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewImages} style={{ cursor: "pointer" }}>
                     View
                   </span>
                 }
@@ -134,7 +141,7 @@ function Logs() {
                 icon="person_add"
                 title="Predictions Data"
                 count={
-                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewPredictions} style={{ cursor: "pointer" }}>
                     View
                   </span>
                 }
@@ -157,7 +164,7 @@ function Logs() {
                 icon="person_add"
                 title="Diagnoses Data"
                 count={
-                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewDiagnoses} style={{ cursor: "pointer" }}>
                     View
                   </span>
                 }
@@ -180,7 +187,7 @@ function Logs() {
                 icon="person_add"
                 title="Treatments Data"
                 count={
-                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewTreatments} style={{ cursor: "pointer" }}>
                     View
                   </span>
                 }
@@ -203,7 +210,7 @@ function Logs() {
                 icon="person_add"
                 title="Bookings Data"
                 count={
-                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewBookings} style={{ cursor: "pointer" }}>
                     View
                   </span>
                 }
