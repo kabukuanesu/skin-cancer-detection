@@ -50,6 +50,9 @@ import PatientProfile from "layouts/patients/profile";
 import UserProfile from "layouts/users/profile";
 import Logs from "layouts/logs";
 
+// Logs tables
+import AppUsersTable from "layouts/logs/tables/users";
+
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -157,6 +160,14 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/user-profile/:userId",
     component: <UserProfile />,
+  },
+  {
+    type: "title",
+    name: "App Users",
+    key: "app-users",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/app-users",
+    component: <AppUsersTable />,
   },
   {
     type: "collapse",

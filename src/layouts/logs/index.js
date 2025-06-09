@@ -14,13 +14,22 @@ Coded by www.creative-tim.com
 */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
+
 function Logs() {
+  const navigate = useNavigate();
+  const handleView = () => navigate("/dashboard");
+  const handleDownload = () => navigate("/profile");
+  const handleSearch = () => navigate("/pending");
+
+  const handleViewAppUsers = () => navigate("/app-users");
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -29,43 +38,22 @@ function Logs() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Bookings"
-                count="Count"
+                color="primary"
+                icon="person_add"
+                title="App Users"
+                count={
+                  <span onClick={handleViewAppUsers} style={{ cursor: "pointer" }}>
+                    View
+                  </span>
+                }
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "than last week",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Staff Members"
-                count="Count"
-                percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="success"
-                icon="store"
-                title="Predictions"
-                count="Count"
-                percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
+                  amount: "",
+                  label: (
+                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
+                      Download
+                    </span>
+                  ),
                 }}
               />
             </MDBox>
@@ -75,12 +63,250 @@ function Logs() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="Follow Ups"
-                count="Count"
+                title="Patients Data"
+                count={
+                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                    View
+                  </span>
+                }
                 percentage={{
                   color: "success",
                   amount: "",
-                  label: "Just updated",
+                  label: (
+                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
+                      Download
+                    </span>
+                  ),
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="Lesions Data"
+                count={
+                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                    View
+                  </span>
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: (
+                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
+                      Download
+                    </span>
+                  ),
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="Images Data"
+                count={
+                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                    View
+                  </span>
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: (
+                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
+                      Download
+                    </span>
+                  ),
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="Predictions Data"
+                count={
+                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                    View
+                  </span>
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: (
+                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
+                      Download
+                    </span>
+                  ),
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="Diagnoses Data"
+                count={
+                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                    View
+                  </span>
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: (
+                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
+                      Download
+                    </span>
+                  ),
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="Treatments Data"
+                count={
+                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                    View
+                  </span>
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: (
+                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
+                      Download
+                    </span>
+                  ),
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="Bookings Data"
+                count={
+                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                    View
+                  </span>
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: (
+                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
+                      Download
+                    </span>
+                  ),
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="Licenses"
+                count={
+                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                    View
+                  </span>
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: (
+                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
+                      Download
+                    </span>
+                  ),
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="Terms and Conditions"
+                count={
+                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                    View
+                  </span>
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: (
+                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
+                      Download
+                    </span>
+                  ),
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="User Logs"
+                count={
+                  <span onClick={handleSearch} style={{ cursor: "pointer" }}>
+                    Search
+                  </span>
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: (
+                    <span onClick={handleSearch} style={{ cursor: "pointer" }}>
+                      Search User
+                    </span>
+                  ),
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="Patient Logs"
+                count={
+                  <span onClick={handleSearch} style={{ cursor: "pointer" }}>
+                    Search
+                  </span>
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: (
+                    <span onClick={handleSearch} style={{ cursor: "pointer" }}>
+                      Search Patient
+                    </span>
+                  ),
                 }}
               />
             </MDBox>
