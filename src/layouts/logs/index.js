@@ -38,6 +38,8 @@ function Logs() {
   const handleViewBookings = () => navigate("/log-bookings");
   const handleViewLicence = () => navigate("/log-licenses");
   const handleViewTc = () => navigate("/log-tc");
+  const handleViewUserLogs = () => navigate("/user-logs");
+  const handleViewPatientLogs = () => navigate("/patient-logs");
 
   return (
     <DashboardLayout>
@@ -281,7 +283,7 @@ function Logs() {
                 icon="person_add"
                 title="User Logs"
                 count={
-                  <span onClick={handleSearch} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewUserLogs} style={{ cursor: "pointer" }}>
                     Search
                   </span>
                 }
@@ -289,7 +291,7 @@ function Logs() {
                   color: "success",
                   amount: "",
                   label: (
-                    <span onClick={handleSearch} style={{ cursor: "pointer" }}>
+                    <span onClick={handleViewUserLogs} style={{ cursor: "pointer" }}>
                       Search User
                     </span>
                   ),
@@ -304,7 +306,7 @@ function Logs() {
                 icon="person_add"
                 title="Patient Logs"
                 count={
-                  <span onClick={handleSearch} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewPatientLogs} style={{ cursor: "pointer" }}>
                     Search
                   </span>
                 }
@@ -312,7 +314,7 @@ function Logs() {
                   color: "success",
                   amount: "",
                   label: (
-                    <span onClick={handleSearch} style={{ cursor: "pointer" }}>
+                    <span onClick={handleViewPatientLogs} style={{ cursor: "pointer" }}>
                       Search Patient
                     </span>
                   ),

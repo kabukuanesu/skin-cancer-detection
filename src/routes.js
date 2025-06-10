@@ -61,6 +61,8 @@ import LogTreatments from "layouts/logs/tables/treatments";
 import LogBookings from "layouts/logs/tables/bookings";
 import LogLicence from "layouts/logs/tables/licences";
 import LogTc from "layouts/logs/tables/tc";
+import UserLogs from "layouts/logs/tables/user-logs";
+import PatientLogs from "layouts/logs/tables/patient-logs";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -249,6 +251,22 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/log-tc",
     component: <LogTc />,
+  },
+  {
+    type: "title",
+    name: "User Logs",
+    key: "user-logs",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/user-logs",
+    component: <UserLogs />,
+  },
+  {
+    type: "title",
+    name: "Patient Logs",
+    key: "patient-logs",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/patient-logs",
+    component: <PatientLogs />,
   },
   {
     type: "collapse",
