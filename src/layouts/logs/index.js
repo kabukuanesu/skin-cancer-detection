@@ -36,6 +36,8 @@ function Logs() {
   const handleViewDiagnoses = () => navigate("/log-diagnoses");
   const handleViewTreatments = () => navigate("/log-treatments");
   const handleViewBookings = () => navigate("/log-bookings");
+  const handleViewLicence = () => navigate("/log-licenses");
+  const handleViewTc = () => navigate("/log-tc");
 
   return (
     <DashboardLayout>
@@ -233,7 +235,7 @@ function Logs() {
                 icon="person_add"
                 title="Licenses"
                 count={
-                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewLicence} style={{ cursor: "pointer" }}>
                     View
                   </span>
                 }
@@ -256,7 +258,7 @@ function Logs() {
                 icon="person_add"
                 title="Terms and Conditions"
                 count={
-                  <span onClick={handleView} style={{ cursor: "pointer" }}>
+                  <span onClick={handleViewTc} style={{ cursor: "pointer" }}>
                     View
                   </span>
                 }
