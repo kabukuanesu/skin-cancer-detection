@@ -20,6 +20,18 @@ export default function PredictionForm() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
+  const resultMap = {
+    bcc: "Basal Cell Carcinoma",
+    mel: "Melanoma",
+    scc: "Squamous Cell Carcinoma",
+    nv: "Melanocytic Nevus",
+    ak: "Actinic Keratosis",
+    bkl: "Benign Keratoses",
+    akiec: "Actinic Keratoses",
+    vasc: "Vascular Lesions",
+    df: "Dermatofibroma",
+  };
+
   const [formData, setFormData] = React.useState({
     predictionResult: "",
     confidenceScore: "",
@@ -27,6 +39,7 @@ export default function PredictionForm() {
 
   const [imageDetails, setImageDetails] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [infoSB, setInfoSB] = useState(false);
@@ -57,6 +70,20 @@ export default function PredictionForm() {
     fetchImageDetails();
   }, [id, enqueueSnackbar]);
 
+  useEffect(() => {
+    // Create the preview
+    if (!selectedFile) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreviewUrl(objectUrl);
+
+    // Clean up
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
   const closeInfoSB = () => setInfoSB(false);
   const handleDetailsDialogOpen = () => setDetailsDialogOpen(true);
   const handleDetailsDialogClose = () => setDetailsDialogOpen(false);
@@ -79,11 +106,13 @@ export default function PredictionForm() {
   );
 
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setFormData({
-      predictionResult: "",
-      confidenceScore: "",
-    });
+    if (event.target.files && event.target.files[0]) {
+      setSelectedFile(event.target.files[0]);
+      setFormData({
+        predictionResult: "",
+        confidenceScore: "",
+      });
+    }
   };
 
   const handleUpload = async () => {
@@ -112,9 +141,11 @@ export default function PredictionForm() {
       }
 
       const predictionData = await response.json();
+      const mappedResult =
+        resultMap[predictionData.predicted_class] || predictionData.predicted_class;
 
       setFormData({
-        predictionResult: predictionData.predicted_class,
+        predictionResult: mappedResult,
         confidenceScore: predictionData.confidence_score.toString(),
       });
 
@@ -221,9 +252,23 @@ export default function PredictionForm() {
 
           {selectedFile && (
             <Grid item xs={12}>
-              <MDTypography variant="body2">
-                Selected: {selectedFile.name} ({Math.round(selectedFile.size / 1024)} KB)
-              </MDTypography>
+              <Box display="flex" alignItems="center">
+                <Box
+                  component="img"
+                  src={previewUrl}
+                  alt="Preview"
+                  sx={{
+                    width: 200,
+                    height: 200,
+                    objectFit: "cover",
+                    marginRight: 2,
+                    border: "2px solid #ccc",
+                  }}
+                />
+                <MDTypography variant="body2">
+                  Selected: {selectedFile.name} ({Math.round(selectedFile.size / 1024)} KB)
+                </MDTypography>
+              </Box>
             </Grid>
           )}
         </Grid>

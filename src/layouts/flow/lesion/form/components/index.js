@@ -202,7 +202,7 @@ export default function LesionForm() {
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
             <MDButton variant="gradient" color="info" onClick={handleExit} fullWidth>
-              Back
+              Exit
             </MDButton>
           </Grid>
         </Grid>
