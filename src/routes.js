@@ -88,7 +88,7 @@ const routes = [
     type: "collapse",
     name: "Staff Registration",
     key: "add-user",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="small">person_add_alt_1</Icon>,
     route: "/add-user",
     component: <AddUser />,
   },
