@@ -86,7 +86,7 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="leaderboard"
+                icon="groups"
                 title="Staff Members"
                 count={loading ? "Loading..." : stats.usersCount}
                 percentage={{
@@ -101,7 +101,7 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                icon="store"
+                icon="screen_search_desktop"
                 title="Predictions"
                 count={loading ? "Loading..." : stats.modelPredictionsCount}
                 percentage={{
@@ -116,7 +116,7 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="person_add"
+                icon="transfer_within_a_station"
                 title="Follow Ups"
                 count={loading ? "Loading..." : stats.upcomingFollowUpsCount}
                 percentage={{
