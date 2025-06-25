@@ -80,7 +80,7 @@ const routes = [
     type: "collapse",
     name: "Staff Members",
     key: "users",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="small">groups</Icon>,
     route: "/users",
     component: <Users />,
   },
