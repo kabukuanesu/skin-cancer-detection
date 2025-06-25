@@ -280,7 +280,7 @@ const routes = [
     type: "collapse",
     name: "Patients",
     key: "patients",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="small">group</Icon>,
     route: "/patients",
     component: <Patients />,
   },
