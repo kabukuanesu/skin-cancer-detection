@@ -272,7 +272,7 @@ const routes = [
     type: "collapse",
     name: "Patient Registration",
     key: "add-patient",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="small">person_add</Icon>,
     route: "/add-patient",
     component: <AddPatient />,
   },
