@@ -4,10 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import MDButton from "components/MDButton";
 import MDSnackbar from "components/MDSnackbar";
 
@@ -115,6 +111,7 @@ export default function TextFields() {
     "firstName",
     "lastName",
     "dateOfBirth",
+    "gender",
     "physicalAddress",
     "email",
     "phoneNumber",
@@ -140,22 +137,6 @@ export default function TextFields() {
           InputLabelProps={key === "dateOfBirth" ? { shrink: true } : {}}
         />
       ))}
-
-      <FormControl sx={{ m: 1, width: "25ch" }}>
-        <InputLabel id="gender-label">Gender</InputLabel>
-        <Select
-          labelId="gender-label"
-          id="gender"
-          value={formData.gender}
-          label="Gender"
-          onChange={handleInputChange}
-          required
-        >
-          <MenuItem value="Male">Male</MenuItem>
-          <MenuItem value="Female">Female</MenuItem>
-          <MenuItem value="Other">Other</MenuItem>
-        </Select>
-      </FormControl>
 
       <Grid item xs={12} sm={6} lg={3}>
         <MDButton variant="gradient" color="info" onClick={handleAddUser} fullWidth>
