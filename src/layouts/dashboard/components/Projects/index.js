@@ -80,7 +80,7 @@ function Projects() {
                 mt: -0.5,
               }}
             >
-              content_paste_search
+              pending
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
               &nbsp;<strong>30 completed</strong> this month

@@ -288,7 +288,7 @@ const routes = [
     type: "collapse",
     name: "Pending",
     key: "pending-flow",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="small">pending</Icon>,
     route: "/pending-flow",
     component: <Pending />,
   },
