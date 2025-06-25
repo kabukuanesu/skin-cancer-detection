@@ -94,7 +94,7 @@ function Projects() {
         </MDBox>
         {renderMenu}
       </MDBox>
-      <MDBox>
+      <MDBox onClick={handlePending} style={{ cursor: "pointer" }}>
         <DataTable
           table={{ columns, rows }}
           showTotalEntries={false}

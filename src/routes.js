@@ -304,7 +304,7 @@ const routes = [
     type: "collapse",
     name: "Reports",
     key: "logs",
-    icon: <Icon fontSize="small">notifications</Icon>,
+    icon: <Icon fontSize="small">content_paste_search</Icon>,
     route: "/logs",
     component: <Logs />,
   },

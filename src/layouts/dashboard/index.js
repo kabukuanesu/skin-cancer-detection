@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -28,6 +29,11 @@ import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 function Dashboard() {
+  const navigate = useNavigate();
+  const handleBookings = () => navigate("/log-bookings");
+  const handleStaffMembers = () => navigate("/app-users");
+  const handlePredictions = () => navigate("/log-predictions");
+
   const { sales, tasks } = reportsLineChartData;
   const [stats, setStats] = useState({
     scheduledPatientsCount: 0,
@@ -69,7 +75,7 @@ function Dashboard() {
       <MDBox py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
+            <MDBox mb={1.5} onClick={handleBookings} style={{ cursor: "pointer" }}>
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
@@ -84,7 +90,7 @@ function Dashboard() {
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
+            <MDBox mb={1.5} onClick={handleStaffMembers} style={{ cursor: "pointer" }}>
               <ComplexStatisticsCard
                 icon="groups"
                 title="Staff Members"
@@ -98,7 +104,7 @@ function Dashboard() {
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
+            <MDBox mb={1.5} onClick={handlePredictions} style={{ cursor: "pointer" }}>
               <ComplexStatisticsCard
                 color="success"
                 icon="screen_search_desktop"
@@ -113,7 +119,7 @@ function Dashboard() {
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
+            <MDBox mb={1.5} onClick={handleBookings} style={{ cursor: "pointer" }}>
               <ComplexStatisticsCard
                 color="primary"
                 icon="transfer_within_a_station"

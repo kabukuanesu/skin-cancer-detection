@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
 // @mui material components
@@ -29,6 +30,8 @@ import MDTypography from "components/MDTypography";
 import TimelineItem from "examples/Timeline/TimelineItem";
 
 function OrdersOverview() {
+  const navigate = useNavigate();
+  const handleBookings = () => navigate("/log-bookings");
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
@@ -132,7 +135,7 @@ function OrdersOverview() {
   }
 
   return (
-    <Card sx={{ height: "100%" }}>
+    <Card sx={{ height: "100%" }} onClick={handleBookings} style={{ cursor: "pointer" }}>
       <MDBox pt={3} px={3}>
         <MDTypography variant="h6" fontWeight="medium">
           Upcoming Events

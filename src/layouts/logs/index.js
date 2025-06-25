@@ -41,6 +41,8 @@ function Logs() {
   const handleViewUserLogs = () => navigate("/user-logs");
   const handleViewPatientLogs = () => navigate("/patient-logs");
 
+  const handleDownloadAppUsers = () => navigate(0);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -49,8 +51,8 @@ function Logs() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="primary"
-                icon="person_add"
+                color="secondary"
+                icon="groups"
                 title="App Users"
                 count={
                   <span onClick={handleViewAppUsers} style={{ cursor: "pointer" }}>
@@ -61,8 +63,8 @@ function Logs() {
                   color: "success",
                   amount: "",
                   label: (
-                    <span onClick={handleDownload} style={{ cursor: "pointer" }}>
-                      Download
+                    <span onClick={handleDownloadAppUsers} style={{ cursor: "pointer" }}>
+                      System Users
                     </span>
                   ),
                 }}
