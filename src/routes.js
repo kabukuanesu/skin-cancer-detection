@@ -320,7 +320,7 @@ const routes = [
     type: "collapse",
     name: "Change Password",
     key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
+    icon: <Icon fontSize="small">password</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
   },
