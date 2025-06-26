@@ -92,8 +92,8 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5} onClick={handleStaffMembers} style={{ cursor: "pointer" }}>
               <ComplexStatisticsCard
-                icon="groups"
-                title="Staff Members"
+                icon="system_update_alt"
+                title="System Users"
                 count={loading ? "Loading..." : stats.usersCount}
                 percentage={{
                   color: "success",
