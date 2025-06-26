@@ -46,7 +46,7 @@ function Tables() {
                 </MDTypography>
                 <MDBox display="flex" gap={1}>
                   <MDButton variant="gradient" color="light" onClick={handleBack}>
-                    Save As...
+                    Print
                   </MDButton>
                   <MDButton variant="gradient" color="light" onClick={handleBack}>
                     Back
