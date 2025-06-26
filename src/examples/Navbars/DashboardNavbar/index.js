@@ -104,9 +104,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
-      <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
-      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+      <NotificationItem icon={<Icon>email</Icon>} title="Check New Messages" />
+      <NotificationItem icon={<Icon>pending</Icon>} title="Manage My Pending Tasks" />
+      <NotificationItem icon={<Icon>check</Icon>} title="Workflow Successfully Completed" />
     </Menu>
   );
 
